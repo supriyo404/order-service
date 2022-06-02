@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "eureka.client.serviceurl",
+  "type": "java.lang.String",
+  "description": "A description for 'eureka.client.serviceurl'"
+}]}
