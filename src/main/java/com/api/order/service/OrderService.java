@@ -1,5 +1,7 @@
 package com.api.order.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ public class OrderService {
 	@Autowired
 	private RestTemplate template;
 	
+	Logger logger = LoggerFactory.getLogger(OrderService.class);
+	
 	@Transactional
 	public TransactionResponse saveOrder(TransactionRequest txrequest) {
 		//add order id and order amount from transaction to payment object
@@ -33,9 +37,14 @@ public class OrderService {
 		
 		
 		//rest call to payment
+		//Set timeouts to avoid delay
+		
+	
 		Payment paymentResponse = template.postForObject("http://PAYMENT-SERVICE/api/payment/doPay", payment,Payment.class);
 		
 		paymentState = paymentResponse.getPaymentStatus().equals("Success")?"Payment processed successfully":"Payment Processing Failed";
+		
+		logger.debug("API is being called and the Payment state is : {}",paymentState);
 		
 		if(paymentResponse.getPaymentStatus().equals("Failed")) {
 			throw new PaymentFailedException(paymentState);
