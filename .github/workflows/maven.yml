@@ -34,11 +34,6 @@ jobs:
       run: mvn test || true  # Allow failures for now (|| true)
 
       # Coverage Report (replace with your coverage tool)
-    - name: Upload coverage to SonarQube
-      uses: sonarsource/sonarqube-scan-action@v3.9.1
-      with:
-        projectKey: supriyo404
-        coverage: cobertura  # Adjust based on your coverage format
     
     - name: Set up JDK 8
       uses: actions/setup-java@v3
