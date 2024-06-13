@@ -35,15 +35,15 @@ jobs:
 
       # Coverage Report (replace with your coverage tool)
     - name: Upload coverage to SonarQube
-      uses: sonarsource/sonarqube-scan-action@v3.0.0
+      uses: sonarsource/sonarqube-scan-action@v3.9.1
       with:
         projectKey: supriyo404
         coverage: cobertura  # Adjust based on your coverage format
     
-    - name: Set up JDK 17
+    - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '8'
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
