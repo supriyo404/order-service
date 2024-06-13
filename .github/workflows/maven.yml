@@ -22,6 +22,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+        
+    - name: Compile the project
+      run: mvn compile
       
 # Checkstyle
     - name: Checkstyle
