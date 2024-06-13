@@ -20,14 +20,13 @@ jobs:
     - name: Checkstyle run
       run: mvn checkstyle:check || true  # Allow failures for now (|| true)
 
+# Coverage Report (replace with your coverage tool)
+
       # SonarQube Scan
-    - name: SonarQube
+    - name: SonarQube Scan
       env:
-        SONAR_HOST: https://sonarcloud.io
-        SONAR_USER: ${{ secrets.SONAR_USER }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-          bash ./sonar-scanner.sh -DprojectKey=supriyo404 -Dsonar.projectKey=supriyo404
+      run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       # Unit Tests (replace with your test command)
     - name: Run Unit Tests
