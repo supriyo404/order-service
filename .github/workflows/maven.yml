@@ -27,7 +27,7 @@ jobs:
         SONAR_USER: ${{ secrets.SONAR_USER }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-          bash ./sonar-scanner.sh -DprojectKey=${{ secrets.SONAR_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_KEY }}
+          bash ./sonar-scanner.sh -DprojectKey=supriyo404 -Dsonar.projectKey=supriyo404
 
       # Unit Tests (replace with your test command)
     - name: Run Unit Tests
@@ -37,7 +37,7 @@ jobs:
     - name: Upload coverage to SonarQube
       uses: sonarsource/sonarqube-scan-action@v3.0.0
       with:
-        projectKey: your_project_key
+        projectKey: supriyo404
         coverage: cobertura  # Adjust based on your coverage format
     
     - name: Set up JDK 17
