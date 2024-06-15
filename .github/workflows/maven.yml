@@ -15,7 +15,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-  setup-env:
+  Setup-env:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -34,6 +34,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
   Scan-and-report:
+    needs: [Checkout,Setup-env]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -55,6 +56,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} || true
   Build-and-test:
+    needs: Scan-and-report
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -69,6 +71,7 @@ jobs:
       run: mvn clean package -DskipTests
 
   Docker:
+    needs: Build-and-test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
