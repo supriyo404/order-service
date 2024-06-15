@@ -56,7 +56,7 @@ jobs:
       run: mvn clean package -DskipTests
 
     - name: Build Docker image
-      run: docker build -t {{ secrets.IMAGE_ID }}:latest .
+      run: docker build -t ${{ secrets.IMAGE_ID }}:latest .
 
     - name: Login to JFrog Artifactory using token
       env:
