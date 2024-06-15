@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableEurekaClient
 public class OrderServiceApplication {
 
 	public static void main(String[] args) {
