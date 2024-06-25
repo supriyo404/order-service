@@ -21,12 +21,15 @@ jobs:
         id: validate_release_type
         run: |
           DESCRIPTION="${{ github.event.pull_request.body }}"
-          echo "DESCRIPTION=${DESCRIPTION}"
-
-          MAJOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Major")
-          MINOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Minor")
-          PATCH_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Patch")
-
-          echo "Major Count: $MAJOR_COUNT"
-          echo "Minor Count: $MINOR_COUNT"
-          echo "Patch Count: $PATCH_COUNT"
+          # Count the number of [x] in DESCRIPTION
+          count=$(echo "$DESCRIPTION" | grep -o '\[x\]' | wc -l)
+          
+          # Check if count is more than 1
+          if [ "$count" -gt 1 ]; then
+            echo "Error: More than one option is selected."
+            exit 1
+          else
+            echo "Only one option is selected."
+            exit 0
+          fi
+          echo "Major Count: $count"
