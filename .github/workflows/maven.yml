@@ -21,15 +21,20 @@ jobs:
         id: validate_release_type
         run: |
           DESCRIPTION="${{ github.event.pull_request.body }}"
+          # Extract the selected option
+          selected_option=$(echo "$DESCRIPTION" | grep -oP '(?<=\[x\] ).*')
+          
           # Count the number of [x] in DESCRIPTION
           count=$(echo "$DESCRIPTION" | grep -o '\[x\]' | wc -l)
           
-          # Check if count is more than 1
-          if [ "$count" -gt 1 ]; then
+          # Check if at least one option is selected
+          if [ "$count" -lt 1 ]; then
+            echo "Error: No option is selected."
+            exit 1
+          elif [ "$count" -gt 1 ]; then
             echo "Error: More than one option is selected."
             exit 1
           else
-            echo "Only one option is selected."
+            echo "Selected option: $selected_option"
             exit 0
           fi
-          echo "Major Count: $count"
