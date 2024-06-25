@@ -1,30 +1,26 @@
-name: PR Check
+name: Add Temporary File to PR Branch
 
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types: [opened, synchronize]
 
 jobs:
-  validate-pr:
+  add-temp-file:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR Branch
         uses: actions/checkout@v4
-
-      - name: Validate PR Template
-        id: validate
-        run: |
-          # Your validation logic here
-          # Example: Setting a variable MY_VAR
-          echo "MY_VAR=value_from_validation" >> $GITHUB_ENV
-
-      - name: Save variable as artifact
-        run: |
-          echo "MY_VAR=$MY_VAR" > my_var.txt
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
         with:
-          name: my-var-artifact
-          path: my_var.txt
+          ref: ${{ github.head_ref }}
+
+      - name: Create Temporary File
+        run: echo "Temporary file content" > temp-file.txt
+
+      - name: Commit and Push Temporary File
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git add temp-file.txt
+          git commit -m "Add temporary file"
+          git push origin HEAD:${{ github.head_ref }}

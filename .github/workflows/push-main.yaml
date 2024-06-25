@@ -1,4 +1,4 @@
-name: Push to Main
+name: Remove Temporary File on Merge to Main
 
 on:
   push:
@@ -6,25 +6,21 @@ on:
       - main
 
 jobs:
-  use-var:
+  remove-temp-file:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Main Branch
         uses: actions/checkout@v4
 
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: my-var-artifact
-          path: .
-
-      - name: Read variable from artifact
-        id: read-var
+      - name: Remove Temporary File
         run: |
-          MY_VAR=$(cat my_var.txt)
-          echo "MY_VAR=$MY_VAR" >> $GITHUB_ENV
-
-      - name: Use the variable
-        run: |
-          echo "The value of MY_VAR is $MY_VAR"
+          if [ -f temp-file.txt ]; then
+            git config --global user.name "${{ github.actor }}"
+            git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+            git rm temp-file.txt
+            git commit -m "Remove temporary file"
+            git push origin main
+          else
+            echo "Temporary file not found, nothing to remove."
+          fi
