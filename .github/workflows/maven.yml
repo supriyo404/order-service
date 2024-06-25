@@ -21,24 +21,11 @@ jobs:
         id: validate_release_type
         run: |
           DESCRIPTION="${{  github.event.pull_request.body }}"
-          echo "DESCRIPTION=${DESCRIPTION}"
           MAJOR_COUNT=$(grep -c "\- \[x\] Major" <<< "$DESCRIPTION")
           MINOR_COUNT=$(grep -c "\- \[x\] Minor" <<< "$DESCRIPTION")
           PATCH_COUNT=$(grep -c "\- \[x\] Patch" <<< "$DESCRIPTION")
+
+          echo "Major minor patch=${MINOR_COUNT}"
           
           TOTAL_SELECTED=$((MAJOR_COUNT + MINOR_COUNT + PATCH_COUNT))
-          
-          if [ "$TOTAL_SELECTED" -ne 1 ]; then
-            echo "Error: Exactly one release type must be selected. Found $TOTAL_SELECTED selections."
-            exit 1
-          fi
-          
-          if [ "$MAJOR_COUNT" -eq 1 ]; then
-            echo "::set-output name=release_type::Major"
-          elif [ "$MINOR_COUNT" -eq 1 ]; then
-            echo "::set-output name=release_type::Minor"
-          elif [ "$PATCH_COUNT" -eq 1 ]; then
-            echo "::set-output name=release_type::Patch"
-          fi
-          echo "Release Type : ${release_type}"
-   
+          echo "Total selected=${TOTAL_SELECTED}"
