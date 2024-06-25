@@ -20,12 +20,5 @@ jobs:
       - name: Validate Release Type Selection
         id: validate_release_type
         run: |
-          DESCRIPTION="${{  github.event.pull_request.body }}"
-          MAJOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Major")
-          MINOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Minor")
-          PATCH_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Patch")
-
-          echo "Major minor patch=${MINOR_COUNT}"
-          
-          TOTAL_SELECTED=$((MAJOR_COUNT + MINOR_COUNT + PATCH_COUNT))
-          echo "Total selected=${TOTAL_SELECTED}"
+          DESCRIPTION="${{ steps.pr_details.outputs.body }}"
+          echo "DESCRIPTION=${DESCRIPTION}"
