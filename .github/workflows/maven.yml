@@ -20,5 +20,5 @@ jobs:
       - name: Validate Release Type Selection
         id: validate_release_type
         run: |
-          DESCRIPTION="${{ steps.pr_details.outputs.body }}"
+          DESCRIPTION="${{ github.event.pull_request.body }}"
           echo "DESCRIPTION=${DESCRIPTION}"
