@@ -22,3 +22,11 @@ jobs:
         run: |
           DESCRIPTION="${{ github.event.pull_request.body }}"
           echo "DESCRIPTION=${DESCRIPTION}"
+
+          MAJOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Major")
+          MINOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Minor")
+          PATCH_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Patch")
+
+          echo "Major Count: $MAJOR_COUNT"
+          echo "Minor Count: $MINOR_COUNT"
+          echo "Patch Count: $PATCH_COUNT"
