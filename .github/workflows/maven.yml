@@ -13,62 +13,32 @@ jobs:
       fail-fast: false
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: Cache Maven packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-
-    - name: Compile the project
-      run: mvn compile
-      
-# Checkstyle
-    - name: Checkstyle
-      run: sudo apt-get update && sudo apt-get install checkstyle
-    - name: Checkstyle run
-      run: mvn checkstyle:check || true  # Allow failures for now (|| true)
-
-# Coverage Report (replace with your coverage tool)
-
-      # SonarQube Scan
-    - name: SonarQube Scan
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} || true
-
-      # Unit Tests (replace with your test command)
-    - name: Run Unit Tests
-      run: mvn test || true  # Allow failures for now (|| true)
-
-      # Coverage Report (replace with your coverage tool)
-
-    - name: Build with Maven
-      run: mvn clean package -DskipTests
-
-    - name: Build Docker image
-      run: docker build -t ${{ secrets.IMAGE_ID }}:latest .
-
-    - name: Login to JFrog Artifactory using token
-      env:
-        ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
-        ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
-      run: |
-          echo $ARTIFACTORY_TOKEN | docker login $ARTIFACTORY_URL --username ${{ secrets.JFROG_USER }} --password-stdin
-          docker login $ARTIFACTORY_URL --username ${{ secrets.JFROG_USER }} --password $ARTIFACTORY_TOKEN
-
-    - name: Push Docker image to JFrog Artifactory
-      run: docker push $IMAGE_ID:latest
-      env:
-          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
-          IMAGE_ID: ${{ secrets.IMAGE_ID }}
-
+      - name: Git Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+      - name: Validate Release Type Selection
+        id: validate_release_type
+        run: |
+          DESCRIPTION="${{  github.event.pull_request.body }}"
+          echo "DESCRIPTION=${DESCRIPTION}"
+          MAJOR_COUNT=$(grep -c "\- \[x\] Major" <<< "$DESCRIPTION")
+          MINOR_COUNT=$(grep -c "\- \[x\] Minor" <<< "$DESCRIPTION")
+          PATCH_COUNT=$(grep -c "\- \[x\] Patch" <<< "$DESCRIPTION")
+          
+          TOTAL_SELECTED=$((MAJOR_COUNT + MINOR_COUNT + PATCH_COUNT))
+          
+          if [ "$TOTAL_SELECTED" -ne 1 ]; then
+            echo "Error: Exactly one release type must be selected. Found $TOTAL_SELECTED selections."
+            exit 1
+          fi
+          
+          if [ "$MAJOR_COUNT" -eq 1 ]; then
+            echo "::set-output name=release_type::Major"
+          elif [ "$MINOR_COUNT" -eq 1 ]; then
+            echo "::set-output name=release_type::Minor"
+          elif [ "$PATCH_COUNT" -eq 1 ]; then
+            echo "::set-output name=release_type::Patch"
+          fi
+          echo "Release Type : ${release_type}"
+   
