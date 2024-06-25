@@ -6,27 +6,23 @@ on:
       - main
 
 jobs:
-  build-and-upload:
+  use-var:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
 
     steps:
-      - name: Git Checkout
-        uses: actions/checkout@v4.1.1
-        with:
-          fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
-          name: release-artifact
-          run-id: ${{ github.event.workflow_run.id }}
+          name: my-var-artifact
+          path: .
 
       - name: Read variable from artifact
         id: read-var
         run: |
-          MY_VAR=$(cat release_type.txt)
+          MY_VAR=$(cat my_var.txt)
           echo "MY_VAR=$MY_VAR" >> $GITHUB_ENV
 
       - name: Use the variable
