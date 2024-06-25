@@ -32,7 +32,7 @@ jobs:
             exit 1
           else
             echo "Selected option: $selected_option"
-            echo "release_type=$selected_option" > release_type.txt
+            echo "release_type=$selected_option" > ${{ github.workspace }}/release_type.txt
             exit 0
           fi
           ls -R
@@ -40,5 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-artifact
-          path: release_type.txt
-          retention-days: 90
+          path: ${{ github.workspace }}/release_type.txt
