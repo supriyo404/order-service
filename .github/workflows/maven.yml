@@ -9,35 +9,20 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: Git Checkout
-        uses: actions/checkout@v4.1.1
-        with:
-          fetch-depth: 0
-      - name: Validate Release Type Selection
-        id: validate_release_type
+     
+      - name: Validate PR Template
+        id: validate
         run: |
-          DESCRIPTION="${{ github.event.pull_request.body }}"
-          # Extract the selected option
-          selected_option=$(echo "$DESCRIPTION" | grep -oP '(?<=\[x\] ).*')
-          
-          # Count the number of [x] in DESCRIPTION
-          count=$(echo "$DESCRIPTION" | grep -o '\[x\]' | wc -l)
-          
-          # Check if at least one option is selected
-          if [ "$count" -lt 1 ]; then
-            echo "Error: No option is selected."
-            exit 1
-          elif [ "$count" -gt 1 ]; then
-            echo "Error: More than one option is selected."
-            exit 1
-          else
-            echo "Selected option: $selected_option"
-            echo "release_type=$selected_option" > ${{ github.workspace }}/release_type.txt
-            exit 0
-          fi
-          ls -R
+          # Your validation logic here
+          # Example: Setting a variable MY_VAR
+          echo "MY_VAR=value_from_validation" >> $GITHUB_ENV
+
       - name: Save variable as artifact
-        uses: actions/upload-artifact@v4
+        run: |
+          echo "MY_VAR=$MY_VAR" > my_var.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: release-artifact
-          path: ${{ github.workspace }}/release_type.txt
+          name: my-var-artifact
+          path: my_var.txt
