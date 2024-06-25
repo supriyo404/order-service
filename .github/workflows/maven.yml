@@ -21,9 +21,9 @@ jobs:
         id: validate_release_type
         run: |
           DESCRIPTION="${{  github.event.pull_request.body }}"
-          MAJOR_COUNT=$(grep -c "\- \[x\] Major" <<< "$DESCRIPTION")
-          MINOR_COUNT=$(grep -c "\- \[x\] Minor" <<< "$DESCRIPTION")
-          PATCH_COUNT=$(grep -c "\- \[x\] Patch" <<< "$DESCRIPTION")
+          MAJOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Major")
+          MINOR_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Minor")
+          PATCH_COUNT=$(echo "$DESCRIPTION" | grep -c "\- \[x\] Patch")
 
           echo "Major minor patch=${MINOR_COUNT}"
           
