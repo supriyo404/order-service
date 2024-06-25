@@ -1,15 +1,17 @@
-name: Java CI with Maven
+name: PR Check
 
-on: pull_request
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
 
 jobs:
-  build-and-upload:
+  validate-pr:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
 
     steps:
-     
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Validate PR Template
         id: validate
         run: |
