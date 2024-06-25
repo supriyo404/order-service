@@ -41,4 +41,4 @@ jobs:
         with:
           name: release-artifact
           path: release_type.txt
-          working-directory: ${{ github.workspace }}
+          retention-days: 90
