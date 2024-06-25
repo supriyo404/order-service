@@ -21,7 +21,6 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: release-artifact
-          path: .
 
       - name: Read variable from artifact
         id: read-var

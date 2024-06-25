@@ -36,7 +36,8 @@ jobs:
             exit 0
           fi
       - name: Save variable as artifact
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4
         with:
           name: release-artifact
-          path: release_type.txt
+          path: ./release_type.txt
+          working-directory: ${{ github.workspace }}
