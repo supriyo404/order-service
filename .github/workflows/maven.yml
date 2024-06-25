@@ -36,7 +36,7 @@ jobs:
             exit 0
           fi
       - name: Save variable as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: release-artifact
           path: release_type.txt
