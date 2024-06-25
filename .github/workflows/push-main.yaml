@@ -1,0 +1,34 @@
+name: Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: release-artifact
+          path: .
+
+      - name: Read variable from artifact
+        id: read-var
+        run: |
+          MY_VAR=$(cat release_type.txt)
+          echo "MY_VAR=$MY_VAR" >> $GITHUB_ENV
+
+      - name: Use the variable
+        run: |
+          echo "The value of MY_VAR is $MY_VAR"
